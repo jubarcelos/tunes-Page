@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
-// import { Redirect } from 'react-router-dom';
 import Header from '../components/Header';
-// import LoadingUser from './LoadingUser';
+import LoadingUser from './LoadingUser';
+import ShowAlbum from '../components/ShowAlbum';
+import shearchAlbumsAPI from '../services/searchAlbumsAPI';
 
 class Search extends Component {
   constructor() {
     super();
     this.state = {
+      isButtonDisabled: true,
       searchInput: '',
       changeInput: false,
-      isButtonDisabled: true,
+      isLoading: false,
+      resultAPI: '',
+      allAlbum: [],
     };
   }
 
@@ -17,12 +21,25 @@ class Search extends Component {
     this.setState({ searchInput: value }, () => { this.ableButton(); });
   };
 
-  // onClicked = () => {
-  //   const { searchInput } = this.state;
-  //   this.setState({ isLoading: true });
-  //   createUser({ name: searchInput })
-  //     .then(() => this.setState({ isLoaded: true, isLoading: false }));
-  // }
+  onClicked = (searchInput) => {
+    this.setState({ isLoading: true });
+    const allAlbum = searchAlbumsAPI(searchInput)
+      .then(() => {
+        if (allAlbum.length > 0) {
+          return this.setState({
+            isLoading: false,
+            resultAPI: `Resultado de álbuns de: ${artistName}`,
+            searchInput: '',
+            allAlbum,
+          });
+        }
+        return this.setState({
+          isLoading: false,
+          resultAPI: 'Nenhum álbum foi encontrado',
+          searchInput: '',
+        });
+      });
+  }
 
   ableButton = () => {
     const MINsTRING = 2;
@@ -37,45 +54,53 @@ class Search extends Component {
   render() {
     const {
       searchInput,
-      changeInput,
+      isLoading,
+      resultAPI,
+      allAlbum,
       isButtonDisabled,
-      onClicked,
     } = this.state;
+
+    const inputArtist = (
+      <input
+        value={ searchInput }
+        onChange={ this.changeInput }
+        type="text"
+        name="searchInput"
+        id="searchInput"
+        data-testid="search-artist-input"
+        placeholder="Artista"
+        minLength="2"
+      />
+    );
     const searchAlbum = (
-      <form action="search" method="GET">
-        <fieldset>
-          <label htmlFor="searchInput">
-            O que você procura:
-            <input
-              value={ searchInput }
-              onChange={ this.changeInput }
-              type="text"
-              name="searchInput"
-              id="searchInput"
-              data-testid="search-artist-input"
-              placeholder="Artista - Album - Música"
-              minLength="2"
-            />
-          </label>
-          <button
-            data-testid="search-artist-button"
-            type="submit"
-            disabled={ isButtonDisabled }
-            onClick={ this.onClicked }
-          >
-            Pesquisar
-          </button>
-        </fieldset>
-      </form>
+      <div>
+        <form className="form" action="search" method="GET">
+          <fieldset>
+            <label htmlFor="searchInput">
+              O que você procura:
+              { inputArtist }
+            </label>
+            <button
+              data-testid="search-artist-button"
+              type="submit"
+              disabled={ isButtonDisabled }
+              onClick={ this.onClicked }
+            >
+              Pesquisar
+            </button>
+          </fieldset>
+        </form>
+      </div>
     );
 
     return (
-      <div data-testid="page-search">
+      <div
+        data-testid="page-search"
+      >
         <span>Search</span>
         <Header />
         <div>
-          { searchAlbum }
-          {/* { isLoaded && <Redirect to="/*" /> } */ }
+          { isLoading ? <LoadingUser /> : searchAlbum }
         </div>
       </div>
     );
