@@ -3,6 +3,8 @@ import { Redirect } from 'react-router-dom';
 import { createUser } from '../services/userAPI';
 import LoadingUser from './LoadingUser';
 
+// Para resolver as falhas da minha lógica consultei o código do colegas Guilherme Augusto e Fernanda Andrade.
+
 class Login extends Component {
   constructor() {
     super();
@@ -27,7 +29,7 @@ class Login extends Component {
 
   ableButton = () => {
     const MINsTRING = 3;
-    const { userInput, isButtonDisabled } = this.state;
+    const { userInput } = this.state;
     if (userInput.length < MINsTRING) {
       this.setState({ isButtonDisabled: true });
     } else {
@@ -59,6 +61,7 @@ class Login extends Component {
                 data-testid="login-name-input"
                 placeholder="Digite o seu nome"
                 minLength="3"
+                // não desabilita o button, mas se eu quiser deixar o button abilitado direto posso usar isso como lembrete pro user.
               />
             </label>
             <button
