@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import LoadingUser from './LoadingUser';
-import ShowAlbum from '../components/ShowAlbum';
-import shearchAlbumsAPI from '../services/searchAlbumsAPI';
+import searchAlbumsAPI from '../services/searchAlbumsAPI';
 
 class Search extends Component {
   constructor() {
@@ -10,36 +10,14 @@ class Search extends Component {
     this.state = {
       isButtonDisabled: true,
       searchInput: '',
-      changeInput: false,
       isLoading: false,
-      resultAPI: '',
-      allAlbum: [],
+      artistSearched: false,
     };
   }
 
   changeInput = ({ target: { value } }) => {
     this.setState({ searchInput: value }, () => { this.ableButton(); });
   };
-
-  onClicked = (searchInput) => {
-    this.setState({ isLoading: true });
-    const allAlbum = searchAlbumsAPI(searchInput)
-      .then(() => {
-        if (allAlbum.length > 0) {
-          return this.setState({
-            isLoading: false,
-            resultAPI: `Resultado de álbuns de: ${artistName}`,
-            searchInput: '',
-            allAlbum,
-          });
-        }
-        return this.setState({
-          isLoading: false,
-          resultAPI: 'Nenhum álbum foi encontrado',
-          searchInput: '',
-        });
-      });
-  }
 
   ableButton = () => {
     const MINsTRING = 2;
@@ -51,13 +29,33 @@ class Search extends Component {
     }
   }
 
+  onClicked = () => {
+    this.callSearch();
+    this.setState({
+      searchInput: '',
+      isLoading: true,
+    });
+  }
+
+  callSearch = () => {
+    const { searchInput } = this.state;
+    searchAlbumsAPI(searchInput)
+      .then((response) => {
+        this.setState({
+          isLoading: false,
+          artistSearched: searchInput,
+          allAlbums: [...response],
+        });
+      });
+  }
+
   render() {
     const {
       searchInput,
       isLoading,
-      resultAPI,
-      allAlbum,
       isButtonDisabled,
+      artistSearched,
+      allAlbums,
     } = this.state;
 
     const inputArtist = (
@@ -72,7 +70,8 @@ class Search extends Component {
         minLength="2"
       />
     );
-    const searchAlbum = (
+
+    const searchArtist = (
       <div>
         <form className="form" action="search" method="GET">
           <fieldset>
@@ -93,15 +92,32 @@ class Search extends Component {
       </div>
     );
 
+    const hasArtist = artistSearched ? (
+      <p>{ `Resultado de álbuns de: ${artistSearched}` }</p>
+    ) : '';
+
+    const hasAlbums = (artistSearched && allAlbums.length <= 0);
     return (
       <div
         data-testid="page-search"
       >
         <span>Search</span>
         <Header />
+        { isLoading ? <LoadingUser /> : searchArtist }
+        { hasArtist }
         <div>
-          { isLoading ? <LoadingUser /> : searchAlbum }
+          {allAlbums && allAlbums.map((album) => (
+            <div key={ album.collectionId }>
+              <Link
+                to={ `/album/${album.collectionId}` }
+                data-testid={ `link-to-album-${album.collectionId}` }
+              >
+                <p>{album.collectionName}</p>
+              </Link>
+            </div>
+          ))}
         </div>
+        { hasAlbums && <span> Nenhum álbum foi encontrado</span>}
       </div>
     );
   }
