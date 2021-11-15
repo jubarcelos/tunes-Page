@@ -66,7 +66,7 @@ class Search extends Component {
         name="searchInput"
         id="searchInput"
         data-testid="search-artist-input"
-        placeholder="Artista"
+        placeholder="Músico ou banda"
         minLength="2"
       />
     );
