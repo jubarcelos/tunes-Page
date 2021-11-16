@@ -29,17 +29,23 @@ class Header extends Component {
 
   render() {
     const { userInput, isLoading } = this.state;
-    const headerSpan = (
-      <span data-testid="header-user-name">
-        { userInput }
-      </span>);
+    // const headerSpan = (
+    //   <span data-testid="header-user-name">
+    //     { userInput }
+    //   </span>);
 
     return (
       <header data-testid="header-component">
         <h1> Trybe Tunes</h1>
-        { isLoading
-          ? <LoadingUser />
-          : headerSpan }
+        {
+          isLoading
+            ? <LoadingUser />
+            : (
+              <span data-testid="header-user-name">
+                { userInput }
+              </span>
+            )
+        }
 
         <div>
           <Link data-testid="link-to-search" to="/search"> Search </Link>
