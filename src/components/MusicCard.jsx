@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import LoadingUser from '../Pages/LoadingUser';
-import { addSong } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
 
 // ul - li todas as músicas do álbum na tela.
 // Crie components/MusicCard exibe as propriedades (trackName e previewUrl) da API Music.
@@ -15,6 +15,26 @@ class MusicCard extends Component {
       isLoading: false,
     };
   }
+
+  componentDidMount() {
+    this.checkedIsTrue();
+  }
+
+  checkedIsTrue = () => {
+    const { music } = this.props;
+    getFavoriteSongs()
+      .then((response) => {
+        if (response.some((song) => song.trackId === music.trackId)) {
+          this.setState({
+            isLoading: false,
+            favorita: true,
+          });
+        }
+      });
+  }
+  // na monitoria o victor me ajudou a visualizar que eu não precisava armazenar o response e apenas manipular. 
+  // e a fazer a logica ainda dentro da função, desde que antes de setar o novo estado.
+  // juntos percebemos que se eu não setar somente uma conferência, tenho problemas na condicional.
 
   changeCheckBoxInput = ({ target: { checked } }) => {
     this.setState({
@@ -34,7 +54,7 @@ class MusicCard extends Component {
   render() {
     const { isLoading, favorita } = this.state;
     const { musicName, previewUrl, trackId } = this.props;
-    console.log(trackId);
+
     return (
       isLoading ? <LoadingUser />
         : (
@@ -71,7 +91,7 @@ MusicCard.propTypes = {
 };
 
 MusicCard.defaultProps = {
-  trackId: '0',
+  trackId: 'zero',
 };
 
 // Guilherme Augusto me ajudou a trazer o 'music' como props, me ensinou a corrigir o bug de album falho com a extensão: https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf
