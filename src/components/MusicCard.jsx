@@ -32,7 +32,8 @@ class MusicCard extends Component {
         }
       });
   }
-  // na monitoria o victor me ajudou a visualizar que eu não precisava armazenar o response e apenas manipular. 
+
+  // na monitoria o victor me ajudou a visualizar que eu não precisava armazenar o response e apenas manipular.
   // e a fazer a logica ainda dentro da função, desde que antes de setar o novo estado.
   // juntos percebemos que se eu não setar somente uma conferência, tenho problemas na condicional.
 
