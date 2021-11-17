@@ -31,11 +31,7 @@ class MusicCard extends Component {
           });
         }
       });
-  }
-
-  // na monitoria o victor me ajudou a visualizar que eu não precisava armazenar o response e apenas manipular.
-  // e a fazer a logica ainda dentro da função, desde que antes de setar o novo estado.
-  // juntos percebemos que se eu não setar somente uma conferência, tenho problemas na condicional.
+  };
 
   changeCheckBoxInput = ({ target: { checked } }) => {
     this.setState({
@@ -95,5 +91,8 @@ MusicCard.defaultProps = {
   trackId: 'zero',
 };
 
-// Guilherme Augusto me ajudou a trazer o 'music' como props, me ensinou a corrigir o bug de album falho com a extensão: https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf
-// tbm me ajudou a corrigir o problema de falha da props com o defaultProps.
+/* Guilherme Augusto me ajudou a trazer o 'music' como props, me ensinou a corrigir o bug de album falho com a extensão: https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf
+tbm me ajudou a corrigir o problema de falha da props com o defaultProps.
+na monitoria o victor me ajudou a visualizar que eu não precisava armazenar o response e apenas manipular.
+e a fazer a logica ainda dentro da função, desde que antes de setar o novo estado.
+juntos percebemos que se eu não setar somente uma conferência, tenho problemas na condicional. */
